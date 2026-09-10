@@ -2,7 +2,7 @@ using FirstApi.Models;
 
 namespace FirstApi.Services;
 
-public class StudentService
+public class StudentService : IStudentService
 {
     private readonly List<Student> students = new()
     {

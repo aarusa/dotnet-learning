@@ -2,27 +2,21 @@ using FirstApi.Models;
 using FirstApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<IStudentService, StudentService>();
+
 var app = builder.Build();
-
-StudentService studentService = new StudentService();
-
-List<Student> students = new List<Student>
-{
-    new Student(1, "Arusha", 29),
-    new Student(2, "Maya", 25),
-    new Student(3, "Ashish", 31)
-};
 
 app.MapGet("/", () => "My first DOTNET API!");
 
 app.MapGet("/about", () => "This is about page.");
 
-app.MapGet("/students", () =>
+app.MapGet("/students", (IStudentService studentService) =>
 {
     return studentService.GetAllStudents();
 });
 
-app.MapGet("/students/{id}", (int id) =>
+app.MapGet("/students/{id}", (IStudentService studentService, int id) =>
 {
     Student? student = studentService.GetStudentById(id);
 
@@ -34,7 +28,7 @@ app.MapGet("/students/{id}", (int id) =>
     return Results.Ok(student);
 });
 
-app.MapPost("/students", (CreateStudentRequest request) =>
+app.MapPost("/students", (IStudentService studentService, CreateStudentRequest request) =>
 {
    Student student = studentService.CreateStudent(
         request.Name,
@@ -44,7 +38,7 @@ app.MapPost("/students", (CreateStudentRequest request) =>
    return Results.Created($"/students/{student.Id}", student); 
 });
 
-app.MapPut("/students/{id}", (int id, UpdateStudentRequest request) =>
+app.MapPut("/students/{id}", (IStudentService studentService, int id, UpdateStudentRequest request) =>
 {
     Student? student = studentService.UpdateStudent(
         id,
@@ -60,11 +54,11 @@ app.MapPut("/students/{id}", (int id, UpdateStudentRequest request) =>
     return Results.Ok(student);
 });
 
-app.MapDelete("/students/{id}", (int id) =>
+app.MapDelete("/students/{id}", (IStudentService studentService, int id) =>
 {
     bool deleted = studentService.DeleteStudent(id);
 
-    if(deleted)
+    if(!deleted)
     {
         return Results.NotFound("Student not found.");
     }
