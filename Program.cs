@@ -19,14 +19,14 @@ app.MapGet("/", () => "My first DOTNET API!");
 
 app.MapGet("/about", () => "This is about page.");
 
-app.MapGet("/students", (IStudentService studentService) =>
+app.MapGet("/students", async (IStudentService studentService) =>
 {
-    return studentService.GetAllStudents();
+    return await studentService.GetAllStudentsAsync();
 });
 
-app.MapGet("/students/{id}", (IStudentService studentService, int id) =>
+app.MapGet("/students/{id}", async (IStudentService studentService, int id) =>
 {
-    Student? student = studentService.GetStudentById(id);
+    Student? student = await studentService.GetStudentByIdAsync(id);
 
     if (student == null)
     {

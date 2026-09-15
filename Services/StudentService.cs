@@ -1,5 +1,6 @@
 using FirstApi.Data;
 using FirstApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirstApi.Services;
 
@@ -11,14 +12,14 @@ public class StudentService : IStudentService
         this.db = db;
     }
 
-    public List<Student> GetAllStudents()
+    public async Task<List<Student>> GetAllStudentsAsync()
     {
-        return db.Students.ToList();
+        return await db.Students.ToListAsync();
     }
 
-    public Student? GetStudentById(int id)
+    public async Task<Student?> GetStudentByIdAsync(int id)
     {
-        return db.Students.Find(id);
+        return await db.Students.FindAsync(id);
     }
 
     public Student CreateStudent(string name, int age)
