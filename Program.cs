@@ -36,9 +36,9 @@ app.MapGet("/students/{id}", async (IStudentService studentService, int id) =>
     return Results.Ok(student);
 });
 
-app.MapPost("/students", (IStudentService studentService, CreateStudentRequest request) =>
+app.MapPost("/students", async (IStudentService studentService, CreateStudentRequest request) =>
 {
-   Student student = studentService.CreateStudent(
+   Student student = await studentService.CreateStudentAsync(
         request.Name,
         request.Age
    );
@@ -46,9 +46,9 @@ app.MapPost("/students", (IStudentService studentService, CreateStudentRequest r
    return Results.Created($"/students/{student.Id}", student); 
 });
 
-app.MapPut("/students/{id}", (IStudentService studentService, int id, UpdateStudentRequest request) =>
+app.MapPut("/students/{id}", async (IStudentService studentService, int id, UpdateStudentRequest request) =>
 {
-    Student? student = studentService.UpdateStudent(
+    Student? student = await studentService.UpdateStudentAsync(
         id,
         request.Name,
         request.Age
@@ -62,9 +62,9 @@ app.MapPut("/students/{id}", (IStudentService studentService, int id, UpdateStud
     return Results.Ok(student);
 });
 
-app.MapDelete("/students/{id}", (IStudentService studentService, int id) =>
+app.MapDelete("/students/{id}", async (IStudentService studentService, int id) =>
 {
-    bool deleted = studentService.DeleteStudent(id);
+    bool deleted = await studentService.DeleteStudentAsync(id);
 
     if(!deleted)
     {

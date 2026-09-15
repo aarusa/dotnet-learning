@@ -14,7 +14,9 @@ public class StudentService : IStudentService
 
     public async Task<List<Student>> GetAllStudentsAsync()
     {
-        return await db.Students.ToListAsync();
+        return await db.Students
+                        .OrderBy(s => s.Id)
+                        .ToListAsync();
     }
 
     public async Task<Student?> GetStudentByIdAsync(int id)
@@ -22,7 +24,7 @@ public class StudentService : IStudentService
         return await db.Students.FindAsync(id);
     }
 
-    public Student CreateStudent(string name, int age)
+    public async Task<Student> CreateStudentAsync(string name, int age)
     {
         Student student = new Student
         {
@@ -30,15 +32,15 @@ public class StudentService : IStudentService
             Age = age
         };
 
-        db.Students.Add(student);
-        db.SaveChanges();
+        await db.Students.AddAsync(student);
+        await db.SaveChangesAsync();
 
         return student;
     }
 
-    public Student? UpdateStudent(int id, string name, int age)
+    public async Task<Student?> UpdateStudentAsync(int id, string name, int age)
     {
-        Student? student = db.Students.Find(id);
+        Student? student = await db.Students.FindAsync(id);
 
         if(student == null)
         {
@@ -48,14 +50,14 @@ public class StudentService : IStudentService
         student.Name = name;
         student.Age = age;
 
-        db.SaveChanges();
+        await db.SaveChangesAsync();
 
         return student;
     }
 
-    public bool DeleteStudent(int id)
+    public async Task<bool> DeleteStudentAsync(int id)
     {
-        Student? student = db.Students.Find(id);
+        Student? student = await db.Students.FindAsync(id);
 
         if (student == null)
         {
@@ -63,7 +65,7 @@ public class StudentService : IStudentService
         }
 
         db.Students.Remove(student);
-        db.SaveChanges();
+        await db.SaveChangesAsync();
 
         return true;
     }
